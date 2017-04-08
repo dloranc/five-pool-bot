@@ -3,6 +3,7 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,6 +24,7 @@ public class FivePoolBot extends DefaultBWListener {
     private BaseLocation baseToScout;
     private BaseLocation enemyBase;
     private int basesCount;
+    private EnemyBuildings enemyBuildings;
 
     public void run() {
         mirror.getModule().setEventListener(this);
@@ -43,6 +45,7 @@ public class FivePoolBot extends DefaultBWListener {
         possibleEnemyBaseLocations = null;
         baseToScout = null;
         enemyBase = null;
+        enemyBuildings = new EnemyBuildings();
 
         //Use BWTA to analyze map
         //This may take a few minutes if the map is processed first time!
@@ -86,6 +89,8 @@ public class FivePoolBot extends DefaultBWListener {
     public void onFrame() {
         float supplyTotal = self.supplyTotal() / 2;
         float supplyUsed = self.supplyUsed() / 2;
+
+        enemyBuildings.update(game);
 
         //game.setTextSize(10);
         game.drawTextScreen(10, 10, "Playing as " + self.getRace());
@@ -141,22 +146,30 @@ public class FivePoolBot extends DefaultBWListener {
 
             gatherMinerals(myUnit);
 
-            if (enemyBase != null) {
-                if (myUnit.getType() == UnitType.Zerg_Zergling && myUnit.isIdle()) {
-                    myUnit.attack(enemyBase.getPosition());
-//                    List<Unit> enemyUnits = game.enemy().getUnits();
-//
-//                    int buildings = 0;
-//
-//                    for (Unit enemy : enemyUnits) {
-//                        if (enemy.getType().isBuilding()) {
-//                            myUnit.attack(enemy.getPosition());
-//                            buildings++;
-//                            break;
-//                        }
-//                    }
-//
-//                    game.drawTextScreen(10, 85, "Enemy buildings: " + buildings);
+            if (myUnit.getType() == UnitType.Zerg_Zergling && myUnit.isIdle()) {
+                HashSet<Position> enemyBuildingPositions = enemyBuildings.getBuildings();
+
+                if (!enemyBuildingPositions.isEmpty()) {
+                    for (Position enemyBuildingPosition : enemyBuildingPositions) {
+                        myUnit.attack(enemyBuildingPosition);
+                        System.out.println(enemyBuildingPosition);
+                        break;
+                    }
+                } else {
+                    if (enemyBase != null) {
+                        myUnit.attack(enemyBase.getPosition());
+                    } else {
+                        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+                        Position randomPosition = new Position(
+                                random.nextInt(game.mapWidth() * 32),
+                                random.nextInt(game.mapHeight() * 32)
+                        );
+
+                        if (myUnit.canAttack(randomPosition)) {
+                            myUnit.attack(randomPosition);
+                        }
+                    }
                 }
             }
         }
