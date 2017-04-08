@@ -50,6 +50,8 @@ public class FivePoolBot extends DefaultBWListener {
         BWTA.readMap();
         BWTA.analyze();
         System.out.println("Map data ready");
+        System.out.println(game.mapWidth());
+        System.out.println(game.mapHeight());
 
         game.setLocalSpeed(0);
 
