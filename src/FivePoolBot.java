@@ -88,7 +88,7 @@ public class FivePoolBot extends DefaultBWListener {
         float supplyUsed = self.supplyUsed() / 2;
 
         //game.setTextSize(10);
-        game.drawTextScreen(10, 10, "Playing as " + self.getName() + " - " + self.getRace());
+        game.drawTextScreen(10, 10, "Playing as " + self.getRace());
 
         int enemyCount = game.enemy().getUnits().size();
 
