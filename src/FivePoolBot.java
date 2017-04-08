@@ -93,6 +93,7 @@ public class FivePoolBot extends DefaultBWListener {
     public void onFrame() {
         float supplyTotal = self.supplyTotal() / 2;
         float supplyUsed = self.supplyUsed() / 2;
+        int dronesCount = getDronesCount();
 
         enemyBuildings.update(game);
 
@@ -112,8 +113,6 @@ public class FivePoolBot extends DefaultBWListener {
         if (buildDrone != null) {
             game.drawTextScreen(10, 65, "Build Drone: " + buildDrone.getPosition().toString());
         }
-
-        int dronesCount = getDronesCount();
 
         for (Unit myUnit : self.getUnits()) {
             if (myUnit.getType() == UnitType.Zerg_Hatchery) {
