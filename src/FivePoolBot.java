@@ -216,9 +216,7 @@ public class FivePoolBot extends DefaultBWListener {
     private BaseLocation selectBase() {
         int baseIndex = ThreadLocalRandom.current().nextInt(possibleEnemyBaseLocations.size());
 
-        BaseLocation baseLocation = possibleEnemyBaseLocations.get(baseIndex);
-
-        return baseLocation;
+        return possibleEnemyBaseLocations.get(baseIndex);
     }
 
     private void removePlayerBaseFromBaseList() {
