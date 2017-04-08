@@ -16,6 +16,7 @@ public class FivePoolBot extends DefaultBWListener {
 
     private boolean isSpawningPool;
     private boolean isScouting;
+    private boolean isScoutingIdle;
     private Unit scoutDrone;
     private Unit buildDrone;
     private Unit hatchery;
@@ -37,6 +38,7 @@ public class FivePoolBot extends DefaultBWListener {
         self = game.self();
 
         isScouting = false;
+        isScoutingIdle = false;
         isSpawningPool = false;
         scoutDrone = null;
         buildDrone = null;
@@ -68,12 +70,14 @@ public class FivePoolBot extends DefaultBWListener {
             if (scoutDrone == null) {
                 if (myUnit.getType() == UnitType.Zerg_Drone) {
                     scoutDrone = myUnit;
+                    continue;
                 }
             }
 
             if (buildDrone == null) {
-                if (myUnit.getType() == UnitType.Zerg_Drone && !myUnit.equals(scoutDrone)) {
+                if (myUnit.getType() == UnitType.Zerg_Drone) {
                     buildDrone = myUnit;
+                    continue;
                 }
             }
 
@@ -165,12 +169,20 @@ public class FivePoolBot extends DefaultBWListener {
                 enemyBase = baseToScout;
                 backToBaseToGatherMinerals();
             }
+            // add isScoutingIdle because scouting drone can be idle for more
+            // than one frame and this behavior causes that drone can't scout
+            // last base when map has four starting locations
+            if (scoutDrone.isIdle() && !isScoutingIdle) {
+                isScoutingIdle = true;
 
-            if (scoutDrone.isIdle() && enemyBuildings.getBuildings().isEmpty()) {
-                possibleEnemyBaseLocations.remove(baseToScout);
+                if (enemyBuildings.getBuildings().isEmpty()) {
+                    possibleEnemyBaseLocations.remove(baseToScout);
 
-                baseToScout = selectBase();
-                scoutDrone.attack(baseToScout.getPosition());
+                    baseToScout = selectBase();
+                    scoutDrone.attack(baseToScout.getPosition());
+                }
+            } else {
+                isScoutingIdle = false;
             }
         }
     }
