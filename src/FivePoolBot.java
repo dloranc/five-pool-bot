@@ -62,7 +62,7 @@ public class FivePoolBot extends DefaultBWListener {
         possibleEnemyBaseLocations = BWTA.getStartLocations();
 
         basesCount = possibleEnemyBaseLocations.size();
-        removePlayerBaseFromBaseList();
+        removePlayerBaseFromPossibleEnemyBaseList();
 
         for (Unit myUnit : self.getUnits()) {
             if (scoutDrone == null) {
@@ -238,7 +238,7 @@ public class FivePoolBot extends DefaultBWListener {
         return possibleEnemyBaseLocations.get(baseIndex);
     }
 
-    private void removePlayerBaseFromBaseList() {
+    private void removePlayerBaseFromPossibleEnemyBaseList() {
         List<BaseLocation> toRemove = new ArrayList<>();
 
         for (BaseLocation location : possibleEnemyBaseLocations) {
