@@ -93,7 +93,7 @@ public class FivePoolBot extends DefaultBWListener {
         int enemyCount = game.enemy().getUnits().size();
 
         game.drawTextScreen(10, 25,
-                game.mapName() + ", " + basesCount + " bases, enemy units: " + enemyCount
+                game.mapFileName() + ", " + basesCount + " bases, enemy units: " + enemyCount
                         + ", bases to scout: " + possibleEnemyBaseLocations.size()
         );
 
