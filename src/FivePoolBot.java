@@ -56,15 +56,6 @@ public class FivePoolBot extends DefaultBWListener {
         BWTA.analyze();
         System.out.println("Map data ready");
 
-        int i = 0;
-        for (BaseLocation baseLocation : BWTA.getBaseLocations()) {
-            System.out.println("Base location #" + (++i) + ". Printing location's region polygon:");
-            for (Position position : baseLocation.getRegion().getPolygon().getPoints()) {
-                System.out.print(position + ", ");
-            }
-            System.out.println();
-        }
-
         game.setLocalSpeed(0);
 
         playerStartLocation = BWTA.getStartLocation(self);
