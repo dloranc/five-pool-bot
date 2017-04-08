@@ -139,7 +139,6 @@ public class FivePoolBot extends DefaultBWListener {
 
             if (dronesCount >= 5 && !isScouting) {
                 baseToScout = selectBase();
-                game.printf(baseToScout.getPosition().toString());
                 scoutDrone.attack(baseToScout.getPosition());
                 isScouting = true;
             }
@@ -152,7 +151,6 @@ public class FivePoolBot extends DefaultBWListener {
                 if (!enemyBuildingPositions.isEmpty()) {
                     for (Position enemyBuildingPosition : enemyBuildingPositions) {
                         myUnit.attack(enemyBuildingPosition);
-                        System.out.println(enemyBuildingPosition);
                         break;
                     }
                 } else {
