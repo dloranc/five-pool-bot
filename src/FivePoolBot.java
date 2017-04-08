@@ -133,8 +133,13 @@ public class FivePoolBot extends DefaultBWListener {
                 }
             }
 
-            gatherMinerals(myUnit);
-            attack(myUnit);
+            if ((myUnit.getType().isWorker() && myUnit.isIdle())) {
+                gatherMinerals(myUnit);
+            }
+
+            if (myUnit.getType() == UnitType.Zerg_Zergling && myUnit.isIdle()) {
+                attack(myUnit);
+            }
         }
 
         scouting(dronesCount);
@@ -200,26 +205,24 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void attack(Unit myUnit) {
-        if (myUnit.getType() == UnitType.Zerg_Zergling && myUnit.isIdle()) {
-            HashSet<Position> enemyBuildingPositions = enemyBuildings.getBuildings();
+        HashSet<Position> enemyBuildingPositions = enemyBuildings.getBuildings();
 
-            if (!enemyBuildingPositions.isEmpty()) {
-                Position enemyBuildingPosition = enemyBuildingPositions.iterator().next();
-                myUnit.attack(enemyBuildingPosition);
+        if (!enemyBuildingPositions.isEmpty()) {
+            Position enemyBuildingPosition = enemyBuildingPositions.iterator().next();
+            myUnit.attack(enemyBuildingPosition);
+        } else {
+            if (enemyBase != null) {
+                myUnit.attack(enemyBase.getPosition());
             } else {
-                if (enemyBase != null) {
-                    myUnit.attack(enemyBase.getPosition());
-                } else {
-                    ThreadLocalRandom random = ThreadLocalRandom.current();
+                ThreadLocalRandom random = ThreadLocalRandom.current();
 
-                    Position randomPosition = new Position(
-                            random.nextInt(game.mapWidth() * 32),
-                            random.nextInt(game.mapHeight() * 32)
-                    );
+                Position randomPosition = new Position(
+                        random.nextInt(game.mapWidth() * 32),
+                        random.nextInt(game.mapHeight() * 32)
+                );
 
-                    if (myUnit.canAttack(randomPosition)) {
-                        myUnit.attack(randomPosition);
-                    }
+                if (myUnit.canAttack(randomPosition)) {
+                    myUnit.attack(randomPosition);
                 }
             }
         }
@@ -259,23 +262,21 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void gatherMinerals(Unit myUnit) {
-        if ((myUnit.getType().isWorker() && myUnit.isIdle())) {
-            if (!(myUnit.equals(scoutDrone) && isScouting)) {
-                Unit closestMineral = null;
+        if (!(myUnit.equals(scoutDrone) && isScouting)) {
+            Unit closestMineral = null;
 
-                //find the closest mineral
-                for (Unit neutralUnit : game.neutral().getUnits()) {
-                    if (neutralUnit.getType().isMineralField()) {
-                        if (closestMineral == null || myUnit.getDistance(neutralUnit) < myUnit.getDistance(closestMineral)) {
-                            closestMineral = neutralUnit;
-                        }
+            //find the closest mineral
+            for (Unit neutralUnit : game.neutral().getUnits()) {
+                if (neutralUnit.getType().isMineralField()) {
+                    if (closestMineral == null || myUnit.getDistance(neutralUnit) < myUnit.getDistance(closestMineral)) {
+                        closestMineral = neutralUnit;
                     }
                 }
+            }
 
-                //if a mineral patch was found, send the worker to gather it
-                if (closestMineral != null) {
-                    myUnit.gather(closestMineral, false);
-                }
+            //if a mineral patch was found, send the worker to gather it
+            if (closestMineral != null) {
+                myUnit.gather(closestMineral, false);
             }
         }
     }
