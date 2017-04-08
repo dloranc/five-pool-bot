@@ -91,8 +91,8 @@ public class FivePoolBot extends DefaultBWListener {
 
     @Override
     public void onFrame() {
-        float supplyTotal = self.supplyTotal() / 2;
         float supplyUsed = self.supplyUsed() / 2;
+        float supplyTotal = self.supplyTotal() / 2;
         int dronesCount = getDronesCount();
 
         enemyBuildings.update(game);
