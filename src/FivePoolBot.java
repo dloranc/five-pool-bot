@@ -206,10 +206,8 @@ public class FivePoolBot extends DefaultBWListener {
             HashSet<Position> enemyBuildingPositions = enemyBuildings.getBuildings();
 
             if (!enemyBuildingPositions.isEmpty()) {
-                for (Position enemyBuildingPosition : enemyBuildingPositions) {
-                    myUnit.attack(enemyBuildingPosition);
-                    break;
-                }
+                Position enemyBuildingPosition = enemyBuildingPositions.iterator().next();
+                myUnit.attack(enemyBuildingPosition);
             } else {
                 if (enemyBase != null) {
                     myUnit.attack(enemyBase.getPosition());
