@@ -30,11 +30,6 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     @Override
-    public void onUnitCreate(Unit unit) {
-        System.out.println("New unit created " + unit.getType());
-    }
-
-    @Override
     public void onStart() {
         game = mirror.getGame();
         self = game.self();
