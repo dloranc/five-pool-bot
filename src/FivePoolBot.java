@@ -110,13 +110,7 @@ public class FivePoolBot extends DefaultBWListener {
             game.drawTextScreen(10, 65, "Build Drone: " + buildDrone.getPosition().toString());
         }
 
-        int dronesCount = 0;
-
-        for (Unit myUnit : self.getUnits()) {
-            if (myUnit.getType() == UnitType.Zerg_Drone) {
-                dronesCount++;
-            }
-        }
+        int dronesCount = getDronesCount();
 
         for (Unit myUnit : self.getUnits()) {
             if (myUnit.getType() == UnitType.Zerg_Hatchery) {
@@ -137,76 +131,88 @@ public class FivePoolBot extends DefaultBWListener {
                 }
             }
 
-            if (dronesCount >= 5 && !isScouting) {
-                baseToScout = selectBase();
-                scoutDrone.attack(baseToScout.getPosition());
-                isScouting = true;
-            }
-
             gatherMinerals(myUnit);
+            attack(myUnit);
+        }
 
-            if (myUnit.getType() == UnitType.Zerg_Zergling && myUnit.isIdle()) {
-                HashSet<Position> enemyBuildingPositions = enemyBuildings.getBuildings();
+        scouting(dronesCount);
 
-                if (!enemyBuildingPositions.isEmpty()) {
-                    for (Position enemyBuildingPosition : enemyBuildingPositions) {
-                        myUnit.attack(enemyBuildingPosition);
-                        break;
-                    }
-                } else {
-                    if (enemyBase != null) {
-                        myUnit.attack(enemyBase.getPosition());
-                    } else {
-                        ThreadLocalRandom random = ThreadLocalRandom.current();
+        if (dronesCount >= 5 && !isSpawningPool && self.minerals() >= 200) {
+            buildSpawningPool();
+        }
+    }
 
-                        Position randomPosition = new Position(
-                                random.nextInt(game.mapWidth() * 32),
-                                random.nextInt(game.mapHeight() * 32)
-                        );
+    private int getDronesCount() {
+        int dronesCount = 0;
 
-                        if (myUnit.canAttack(randomPosition)) {
-                            myUnit.attack(randomPosition);
-                        }
-                    }
-                }
+        for (Unit myUnit : self.getUnits()) {
+            if (myUnit.getType() == UnitType.Zerg_Drone) {
+                dronesCount++;
             }
+        }
+        return dronesCount;
+    }
+
+    private void scouting(int dronesCount) {
+        if (dronesCount >= 5 && !isScouting) {
+            baseToScout = selectBase();
+            scoutDrone.attack(baseToScout.getPosition());
+            isScouting = true;
         }
 
         if (isScouting) {
-            List<Unit> enemyUnits = game.enemy().getUnits();
-
-            int buildingsCount = 0;
-
-            for (Unit enemyUnit : enemyUnits) {
-                if (enemyUnit.getType().isBuilding()) {
-                    buildingsCount++;
-                }
-            }
-
             if (scoutDrone.isUnderAttack()) {
                 enemyBase = baseToScout;
                 backToBaseToGatherMinerals();
             }
 
-            if (scoutDrone.isIdle() && buildingsCount == 0) {
+            if (scoutDrone.isIdle() && enemyBuildings.getBuildings().isEmpty()) {
                 possibleEnemyBaseLocations.remove(baseToScout);
 
                 baseToScout = selectBase();
                 scoutDrone.attack(baseToScout.getPosition());
             }
         }
+    }
 
-        if (dronesCount >= 5 && !isSpawningPool && self.minerals() >= 200) {
-            TilePosition buildPosition = BuildingUtilities.getBuildTile(
-                    game,
-                    buildDrone,
-                    UnitType.Zerg_Spawning_Pool,
-                    playerStartLocation.getTilePosition()
-            );
+    private void buildSpawningPool() {
+        TilePosition buildPosition = BuildingUtilities.getBuildTile(
+                game,
+                buildDrone,
+                UnitType.Zerg_Spawning_Pool,
+                playerStartLocation.getTilePosition()
+        );
 
-            if (buildPosition != null) {
-                buildDrone.build(UnitType.Zerg_Spawning_Pool, buildPosition);
-                isSpawningPool = true;
+        if (buildPosition != null) {
+            buildDrone.build(UnitType.Zerg_Spawning_Pool, buildPosition);
+            isSpawningPool = true;
+        }
+    }
+
+    private void attack(Unit myUnit) {
+        if (myUnit.getType() == UnitType.Zerg_Zergling && myUnit.isIdle()) {
+            HashSet<Position> enemyBuildingPositions = enemyBuildings.getBuildings();
+
+            if (!enemyBuildingPositions.isEmpty()) {
+                for (Position enemyBuildingPosition : enemyBuildingPositions) {
+                    myUnit.attack(enemyBuildingPosition);
+                    break;
+                }
+            } else {
+                if (enemyBase != null) {
+                    myUnit.attack(enemyBase.getPosition());
+                } else {
+                    ThreadLocalRandom random = ThreadLocalRandom.current();
+
+                    Position randomPosition = new Position(
+                            random.nextInt(game.mapWidth() * 32),
+                            random.nextInt(game.mapHeight() * 32)
+                    );
+
+                    if (myUnit.canAttack(randomPosition)) {
+                        myUnit.attack(randomPosition);
+                    }
+                }
             }
         }
     }
