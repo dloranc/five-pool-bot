@@ -98,6 +98,7 @@ public class FivePoolBot extends DefaultBWListener {
         enemyBuildings.update(game);
 
         printDebug();
+        drawDebug();
 
         for (Unit myUnit : self.getUnits()) {
             if (myUnit.getType() == UnitType.Zerg_Hatchery) {
@@ -150,6 +151,23 @@ public class FivePoolBot extends DefaultBWListener {
 
         if (buildDrone != null) {
             game.drawTextScreen(10, 65, "Build Drone: " + buildDrone.getPosition().toString());
+        }
+    }
+
+    private void drawDebug() {
+        if (scoutDrone != null) {
+            Position position = scoutDrone.getPosition();
+            Position destination = scoutDrone.getOrderTargetPosition();
+
+            if (destination.isValid()) {
+                if (!destination.equals(new Position(0, 0))) {
+                    game.drawLineMap(position, destination, Color.Blue);
+                }
+            }
+        }
+
+        if (enemyBase != null) {
+            game.drawCircleMap(enemyBase.getPosition(), 70, Color.Purple);
         }
     }
 
@@ -216,6 +234,7 @@ public class FivePoolBot extends DefaultBWListener {
             myUnit.attack(enemyBuildingPosition);
         } else {
             if (enemyBase != null) {
+                // TODO: fix this crap
                 myUnit.attack(enemyBase.getPosition());
             } else {
                 ThreadLocalRandom random = ThreadLocalRandom.current();
