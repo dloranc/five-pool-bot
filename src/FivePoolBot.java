@@ -97,22 +97,7 @@ public class FivePoolBot extends DefaultBWListener {
 
         enemyBuildings.update(game);
 
-        game.drawTextScreen(10, 10, "Playing as " + self.getRace());
-
-        int enemyCount = game.enemy().getUnits().size();
-
-        game.drawTextScreen(10, 25,
-                game.mapFileName() + ", " + basesCount + " bases, enemy units: " + enemyCount
-                        + ", bases to scout: " + possibleEnemyBaseLocations.size()
-        );
-
-        if (scoutDrone != null) {
-            game.drawTextScreen(10, 45, "Scout Drone: " + scoutDrone.getPosition().toString());
-        }
-
-        if (buildDrone != null) {
-            game.drawTextScreen(10, 65, "Build Drone: " + buildDrone.getPosition().toString());
-        }
+        printDebug();
 
         for (Unit myUnit : self.getUnits()) {
             if (myUnit.getType() == UnitType.Zerg_Hatchery) {
@@ -146,6 +131,25 @@ public class FivePoolBot extends DefaultBWListener {
 
         if (dronesCount >= 5 && !isSpawningPool && self.minerals() >= 200) {
             buildSpawningPool();
+        }
+    }
+
+    private void printDebug() {
+        game.drawTextScreen(10, 10, "Playing as " + self.getRace());
+
+        int enemyCount = game.enemy().getUnits().size();
+
+        game.drawTextScreen(10, 25,
+                game.mapFileName() + ", " + basesCount + " bases, enemy units: " + enemyCount
+                        + ", bases to scout: " + possibleEnemyBaseLocations.size()
+        );
+
+        if (scoutDrone != null) {
+            game.drawTextScreen(10, 45, "Scout Drone: " + scoutDrone.getPosition().toString());
+        }
+
+        if (buildDrone != null) {
+            game.drawTextScreen(10, 65, "Build Drone: " + buildDrone.getPosition().toString());
         }
     }
 
