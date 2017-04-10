@@ -248,9 +248,19 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private BaseLocation selectBase() {
-        int baseIndex = ThreadLocalRandom.current().nextInt(possibleEnemyBaseLocations.size());
+        BaseLocation nearestBaseLocation = null;
+        int nearestDistance = Integer.MAX_VALUE;
 
-        return possibleEnemyBaseLocations.get(baseIndex);
+        for (BaseLocation baseLocation : possibleEnemyBaseLocations) {
+            int distance = scoutDrone.getDistance(baseLocation.getPosition());
+
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestBaseLocation = baseLocation;
+            }
+        }
+
+        return nearestBaseLocation;
     }
 
     private void removePlayerBaseFromPossibleEnemyBaseList() {
