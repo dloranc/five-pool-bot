@@ -250,6 +250,12 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void buildSpawningPool() {
+        if (buildDrone.isCarryingMinerals()) {
+            buildDrone.returnCargo();
+
+            return;
+        }
+
         TilePosition buildPosition = BuildingUtilities.getBuildTile(
                 game,
                 buildDrone,
