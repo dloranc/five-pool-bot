@@ -252,7 +252,7 @@ public class FivePoolBot extends DefaultBWListener {
     public void onUnitDestroy(Unit unit) {
         UnitType unitType = unit.getType();
 
-        if (Objects.equals(unit.getPlayer().getName(), self.getName())) {
+        if (!Objects.equals(unit.getPlayer().getName(), self.getName())) {
             if (isBase(unitType)) {
                 isEnemyBaseDestroyed = true;
             }
