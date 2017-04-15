@@ -139,7 +139,7 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void printDebug() {
-        game.drawTextScreen(10, 10, "Playing as " + self.getRace());
+        game.drawTextScreen(10, 10, "Playing as " + self.getRace() + ", FPS: " + game.getFPS() + ", frames: " + game.getFrameCount());
 
         int enemyCount = game.enemy().getUnits().size();
 
