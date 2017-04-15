@@ -134,6 +134,15 @@ public class FivePoolBot extends DefaultBWListener {
         }
     }
 
+    @Override
+    public void onEnd(boolean b) {
+        if (self.isVictorious()) {
+            System.out.println("Victory!");
+        } else {
+            System.out.println("Lose...");
+        }
+    }
+
     private void printDebug() {
         game.drawTextScreen(10, 10, "Playing as " + self.getRace() + ", FPS: " + game.getFPS() + ", frames: " + game.getFrameCount());
 
