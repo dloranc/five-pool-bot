@@ -159,19 +159,47 @@ public class FivePoolBot extends DefaultBWListener {
 
     private void drawDebug() {
         if (scoutDrone != null) {
-            Position position = scoutDrone.getPosition();
-            Position destination = scoutDrone.getOrderTargetPosition();
+            drawTargetLine(scoutDrone);
+        }
 
-            if (destination.isValid()) {
-                if (!destination.equals(new Position(0, 0))) {
-                    game.drawLineMap(position, destination, Color.Blue);
-                }
+        for (Unit unit : self.getUnits()) {
+            if (unit.getType() == UnitType.Zerg_Zergling) {
+                drawTargetLine(unit);
             }
         }
 
         if (enemyBase != null) {
             game.drawCircleMap(enemyBase.getPosition(), 70, Color.Purple);
         }
+    }
+
+    private void drawTargetLine(Unit unit) {
+        Position position = unit.getPosition();
+        Position destination = unit.getOrderTargetPosition();
+
+        Order order = unit.getOrder();
+
+        Color color = assignOrderColor(order);
+
+        if (destination.isValid()) {
+            if (!destination.equals(new Position(0, 0))) {
+                game.drawLineMap(position, destination, color);
+            }
+        }
+    }
+
+    private Color assignOrderColor(Order order) {
+        Color color = Color.White;
+
+        if (order == Order.AttackMove || order == Order.AttackUnit) {
+            color = Color.Red;
+        }
+
+        if (order == Order.MoveToMinerals || order == Order.ReturnMinerals) {
+            color = Color.Blue;
+        }
+
+        return color;
     }
 
     private int getDronesCount() {
