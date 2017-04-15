@@ -16,7 +16,6 @@ public class FivePoolBot extends DefaultBWListener {
     private Player self;
 
     private boolean isSpawningPool;
-    private boolean isScouting;
     private boolean isScoutingIdle;
     private Unit scoutDrone;
     private Unit buildDrone;
@@ -39,7 +38,6 @@ public class FivePoolBot extends DefaultBWListener {
         game = mirror.getGame();
         self = game.self();
 
-        isScouting = false;
         isScoutingIdle = false;
         isSpawningPool = false;
         scoutDrone = null;
@@ -70,13 +68,6 @@ public class FivePoolBot extends DefaultBWListener {
         removePlayerBaseFromPossibleEnemyBaseList();
 
         for (Unit myUnit : self.getUnits()) {
-            if (scoutDrone == null) {
-                if (myUnit.getType() == UnitType.Zerg_Drone) {
-                    scoutDrone = myUnit;
-                    continue;
-                }
-            }
-
             if (buildDrone == null) {
                 if (myUnit.getType() == UnitType.Zerg_Drone) {
                     buildDrone = myUnit;
@@ -122,7 +113,7 @@ public class FivePoolBot extends DefaultBWListener {
                 }
             }
 
-            if ((myUnit.getType().isWorker() && myUnit.isIdle())) {
+            if (myUnit.getType().isWorker() && myUnit.isIdle()) {
                 gatherMinerals(myUnit);
             }
 
@@ -131,10 +122,19 @@ public class FivePoolBot extends DefaultBWListener {
             }
         }
 
-        scouting(dronesCount);
+        scouting();
 
         if (dronesCount >= 5 && !isSpawningPool && self.minerals() >= 200) {
             buildSpawningPool();
+        }
+    }
+
+    @Override
+    public void onUnitComplete(Unit unit) {
+        if (scoutDrone == null && getDronesCount() >= 5) {
+            if (unit.getType() == UnitType.Zerg_Drone) {
+                scoutDrone = unit;
+            }
         }
     }
 
@@ -185,34 +185,35 @@ public class FivePoolBot extends DefaultBWListener {
         return dronesCount;
     }
 
-    private void scouting(int dronesCount) {
-        if (dronesCount >= 5 && !isScouting) {
-            baseToScout = selectBase();
-            scoutDrone.attack(baseToScout.getPosition());
-            isScouting = true;
+    private void scouting() {
+        if (scoutDrone == null) {
+            return;
         }
 
-        if (isScouting) {
-            if (scoutDrone.isUnderAttack()) {
-                enemyBase = baseToScout;
-                backToBaseToGatherMinerals();
-            }
-            // add isScoutingIdle because scouting drone can be idle for more
-            // than one frame and this behavior causes that drone can't scout
-            // last base when map has four starting locations
-            if (scoutDrone.isIdle() && !isScoutingIdle) {
-                isScoutingIdle = true;
+        if (scoutDrone.isUnderAttack()) {
+            enemyBase = baseToScout;
+            backToBaseToGatherMinerals();
+        }
+        // add isScoutingIdle because scouting drone can be idle for more
+        // than one frame and this behavior causes that drone can't scout
+        // last base when map has four starting locations
+        if (scoutDrone.isIdle() && !isScoutingIdle) {
+            isScoutingIdle = true;
 
-                if (enemyBuildings.getBuildings().isEmpty()) {
-                    possibleEnemyBaseLocations.remove(baseToScout);
+            if (enemyBuildings.getBuildings().isEmpty()) {
+                possibleEnemyBaseLocations.remove(baseToScout);
 
-                    baseToScout = selectBase();
-                    scoutDrone.attack(baseToScout.getPosition());
+                baseToScout = selectBase();
+                scoutDrone.attack(baseToScout.getPosition());
+
+                if (possibleEnemyBaseLocations.size() == 1) {
+                    enemyBase = baseToScout;
                 }
-            } else {
-                isScoutingIdle = false;
             }
+        } else {
+            isScoutingIdle = false;
         }
+
     }
 
     private void buildSpawningPool() {
@@ -299,11 +300,6 @@ public class FivePoolBot extends DefaultBWListener {
         BaseLocation nearestBaseLocation = null;
         int nearestDistance = Integer.MAX_VALUE;
 
-        if (possibleEnemyBaseLocations.size() == 1) {
-            enemyBase = possibleEnemyBaseLocations.get(0);
-            return enemyBase;
-        }
-
         for (BaseLocation baseLocation : possibleEnemyBaseLocations) {
             int distance = scoutDrone.getDistance(baseLocation.getPosition());
 
@@ -329,22 +325,26 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void gatherMinerals(Unit myUnit) {
-        if (!(myUnit.equals(scoutDrone) && isScouting)) {
-            Unit closestMineral = null;
+        if (scoutDrone != null) {
+            if (myUnit.getID() == scoutDrone.getID()) {
+                return;
+            }
+        }
 
-            //find the closest mineral
-            for (Unit neutralUnit : game.neutral().getUnits()) {
-                if (neutralUnit.getType().isMineralField()) {
-                    if (closestMineral == null || myUnit.getDistance(neutralUnit) < myUnit.getDistance(closestMineral)) {
-                        closestMineral = neutralUnit;
-                    }
+        Unit closestMineral = null;
+
+        //find the closest mineral
+        for (Unit neutralUnit : game.neutral().getUnits()) {
+            if (neutralUnit.getType().isMineralField()) {
+                if (closestMineral == null || myUnit.getDistance(neutralUnit) < myUnit.getDistance(closestMineral)) {
+                    closestMineral = neutralUnit;
                 }
             }
+        }
 
-            //if a mineral patch was found, send the worker to gather it
-            if (closestMineral != null) {
-                myUnit.gather(closestMineral, false);
-            }
+        //if a mineral patch was found, send the worker to gather it
+        if (closestMineral != null) {
+            myUnit.gather(closestMineral, false);
         }
     }
 
