@@ -194,6 +194,7 @@ public class FivePoolBot extends DefaultBWListener {
 
         if (isScouting) {
             if (scoutDrone.isUnderAttack()) {
+                enemyBase = baseToScout;
                 backToBaseToGatherMinerals();
             }
             // add isScoutingIdle because scouting drone can be idle for more
@@ -297,6 +298,11 @@ public class FivePoolBot extends DefaultBWListener {
     private BaseLocation selectBase() {
         BaseLocation nearestBaseLocation = null;
         int nearestDistance = Integer.MAX_VALUE;
+
+        if (possibleEnemyBaseLocations.size() == 1) {
+            enemyBase = possibleEnemyBaseLocations.get(0);
+            return enemyBase;
+        }
 
         for (BaseLocation baseLocation : possibleEnemyBaseLocations) {
             int distance = scoutDrone.getDistance(baseLocation.getPosition());
