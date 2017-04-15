@@ -5,6 +5,7 @@ import bwta.BaseLocation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class FivePoolBot extends DefaultBWListener {
@@ -24,6 +25,7 @@ public class FivePoolBot extends DefaultBWListener {
     private List<BaseLocation> possibleEnemyBaseLocations;
     private BaseLocation baseToScout;
     private BaseLocation enemyBase;
+    private boolean isEnemyBaseDestroyed;
     private int basesCount;
     private EnemyBuildings enemyBuildings;
 
@@ -47,6 +49,7 @@ public class FivePoolBot extends DefaultBWListener {
         possibleEnemyBaseLocations = null;
         baseToScout = null;
         enemyBase = null;
+        isEnemyBaseDestroyed = false;
         enemyBuildings = new EnemyBuildings();
 
         //Use BWTA to analyze map
@@ -191,7 +194,6 @@ public class FivePoolBot extends DefaultBWListener {
 
         if (isScouting) {
             if (scoutDrone.isUnderAttack()) {
-                enemyBase = baseToScout;
                 backToBaseToGatherMinerals();
             }
             // add isScoutingIdle because scouting drone can be idle for more
@@ -234,20 +236,46 @@ public class FivePoolBot extends DefaultBWListener {
             myUnit.attack(enemyBuildingPosition);
         } else {
             if (enemyBase != null) {
-                // TODO: fix this crap
-                myUnit.attack(enemyBase.getPosition());
-            } else {
-                ThreadLocalRandom random = ThreadLocalRandom.current();
-
-                Position randomPosition = new Position(
-                        random.nextInt(game.mapWidth() * 32),
-                        random.nextInt(game.mapHeight() * 32)
-                );
-
-                if (myUnit.canAttack(randomPosition)) {
-                    myUnit.attack(randomPosition);
+                if (!isEnemyBaseDestroyed) {
+                    myUnit.attack(enemyBase.getPosition());
+                } else {
+                    scoutAndAttack(myUnit);
                 }
+            } else {
+                scoutAndAttack(myUnit);
             }
+        }
+    }
+
+    @Override
+    public void onUnitDestroy(Unit unit) {
+        UnitType unitType = unit.getType();
+
+        if (Objects.equals(unit.getPlayer().getName(), self.getName())) {
+            if (isBase(unitType)) {
+                isEnemyBaseDestroyed = true;
+            }
+        }
+    }
+
+    private boolean isBase(UnitType unitType) {
+        return unitType == UnitType.Protoss_Nexus ||
+                unitType == UnitType.Zerg_Hatchery ||
+                unitType == UnitType.Zerg_Lair ||
+                unitType == UnitType.Zerg_Hive ||
+                unitType == UnitType.Terran_Command_Center;
+    }
+
+    private void scoutAndAttack(Unit myUnit) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        Position randomPosition = new Position(
+                random.nextInt(game.mapWidth() * 32),
+                random.nextInt(game.mapHeight() * 32)
+        );
+
+        if (myUnit.canAttack(randomPosition)) {
+            myUnit.attack(randomPosition);
         }
     }
 
