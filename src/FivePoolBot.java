@@ -1,7 +1,6 @@
 import bwapi.*;
-import bwta.BWTA;
-import bwta.BaseLocation;
-import bwta.Chokepoint;
+import bwapi.Color;
+import bwta.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -153,6 +152,7 @@ public class FivePoolBot extends DefaultBWListener {
 
     private void drawDebug() {
         drawChokepointLines();
+        drawUnwalkablePolygons();
 
         if (scoutDrone != null) {
             drawTargetLine(scoutDrone);
@@ -166,6 +166,34 @@ public class FivePoolBot extends DefaultBWListener {
 
         if (enemyBase != null) {
             game.drawCircleMap(enemyBase.getPosition(), 70, Color.Purple);
+        }
+    }
+
+    private void drawUnwalkablePolygons() {
+        List<Polygon> polygons = BWTA.getUnwalkablePolygons();
+
+        for (Polygon polygon : polygons) {
+            Position previousPosition = null;
+            Position firstPosition = null;
+            List<Position> positions = polygon.getPoints();
+
+            List<Position> fixedPositions = new ArrayList<>();
+
+            for (Position position : positions) {
+                fixedPositions.add(new Position(position.getX() * 8, position.getY() * 8));
+            }
+
+            for (Position position : fixedPositions) {
+                if (previousPosition == null) {
+                    previousPosition = position.getPoint();
+                    firstPosition = position.getPoint();
+                } else {
+                    game.drawLineMap(previousPosition, position.getPoint(), Color.Grey);
+                    previousPosition = position.getPoint();
+                }
+            }
+
+            game.drawLineMap(firstPosition, fixedPositions.get(positions.size() - 1), Color.Grey);
         }
     }
 
