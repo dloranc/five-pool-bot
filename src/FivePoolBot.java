@@ -46,6 +46,7 @@ public class FivePoolBot extends DefaultBWListener {
         baseToScout = null;
         enemyBase = null;
         isEnemyBaseDestroyed = false;
+        basesCount = 0;
         enemyBuildings = new EnemyBuildings();
 
         //Use BWTA to analyze map
