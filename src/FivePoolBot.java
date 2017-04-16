@@ -37,8 +37,8 @@ public class FivePoolBot extends DefaultBWListener {
         game = mirror.getGame();
         self = game.self();
 
-        isScoutingIdle = false;
         isSpawningPool = false;
+        isScoutingIdle = false;
         scoutDrone = null;
         hatchery = null;
         playerStartLocation = null;
