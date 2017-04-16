@@ -18,7 +18,6 @@ public class FivePoolBot extends DefaultBWListener {
     private boolean isSpawningPool;
     private boolean isScoutingIdle;
     private Unit scoutDrone;
-    private Unit buildDrone;
     private Unit hatchery;
     private BaseLocation playerStartLocation;
     private List<BaseLocation> possibleEnemyBaseLocations;
@@ -41,7 +40,6 @@ public class FivePoolBot extends DefaultBWListener {
         isScoutingIdle = false;
         isSpawningPool = false;
         scoutDrone = null;
-        buildDrone = null;
         hatchery = null;
         playerStartLocation = null;
         possibleEnemyBaseLocations = null;
@@ -64,13 +62,6 @@ public class FivePoolBot extends DefaultBWListener {
         removePlayerBaseFromPossibleEnemyBaseList();
 
         for (Unit myUnit : self.getUnits()) {
-            if (buildDrone == null) {
-                if (myUnit.getType() == UnitType.Zerg_Drone) {
-                    buildDrone = myUnit;
-                    continue;
-                }
-            }
-
             if (hatchery == null) {
                 if (myUnit.getType() == UnitType.Zerg_Hatchery) {
                     hatchery = myUnit;
@@ -155,10 +146,6 @@ public class FivePoolBot extends DefaultBWListener {
 
         if (scoutDrone != null) {
             game.drawTextScreen(10, 45, "Scout Drone: " + scoutDrone.getPosition().toString());
-        }
-
-        if (buildDrone != null) {
-            game.drawTextScreen(10, 65, "Build Drone: " + buildDrone.getPosition().toString());
         }
     }
 
@@ -250,6 +237,17 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void buildSpawningPool() {
+        Unit buildDrone = null;
+
+        for (Unit myUnit : self.getUnits()) {
+            if (myUnit.getType() == UnitType.Zerg_Drone) {
+                if (!myUnit.isCarryingMinerals() && myUnit.getID() != scoutDrone.getID()) {
+                    buildDrone = myUnit;
+                    break;
+                }
+            }
+        }
+
         TilePosition buildPosition = BuildingUtilities.getBuildTile(
                 game,
                 buildDrone,
