@@ -1,6 +1,7 @@
 import bwapi.*;
 import bwta.BWTA;
 import bwta.BaseLocation;
+import bwta.Chokepoint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -151,6 +152,8 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void drawDebug() {
+        drawChokepointLines();
+
         if (scoutDrone != null) {
             drawTargetLine(scoutDrone);
         }
@@ -163,6 +166,16 @@ public class FivePoolBot extends DefaultBWListener {
 
         if (enemyBase != null) {
             game.drawCircleMap(enemyBase.getPosition(), 70, Color.Purple);
+        }
+    }
+
+    private void drawChokepointLines() {
+        List<Chokepoint> chokepoints = BWTA.getChokepoints();
+
+        for (Chokepoint chokepoint : chokepoints) {
+            Pair<Position, Position> sides = chokepoint.getSides();
+
+            game.drawLineMap(sides.first, sides.second, Color.Yellow);
         }
     }
 
