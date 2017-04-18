@@ -1,3 +1,5 @@
+package dloranc.fivepoolbot;
+
 import bwapi.Game;
 import bwapi.Position;
 import bwapi.TilePosition;

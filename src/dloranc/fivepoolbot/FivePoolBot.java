@@ -1,3 +1,5 @@
+package dloranc.fivepoolbot;
+
 import bwapi.*;
 import bwapi.Color;
 import bwta.*;
