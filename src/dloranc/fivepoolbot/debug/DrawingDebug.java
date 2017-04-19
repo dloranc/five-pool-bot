@@ -3,8 +3,10 @@ package dloranc.fivepoolbot.debug;
 import bwapi.*;
 import bwta.*;
 import bwta.Region;
+import dloranc.fivepoolbot.EnemyBuildings;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class DrawingDebug {
@@ -132,5 +134,13 @@ public class DrawingDebug {
         }
 
         return color;
+    }
+
+    public void drawEnemyBuildings(EnemyBuildings enemyBuildings) {
+        HashSet<Position> buildings = enemyBuildings.getBuildings();
+
+        for (Position position : buildings) {
+            game.drawCircleMap(position, 10, Color.Red, true);
+        }
     }
 }
