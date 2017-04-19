@@ -1,7 +1,8 @@
 package dloranc.fivepoolbot;
 
 import bwapi.*;
-import bwta.*;
+import bwta.BWTA;
+import bwta.BaseLocation;
 import dloranc.fivepoolbot.debug.DrawingDebug;
 import dloranc.fivepoolbot.debug.PrintingDebug;
 
@@ -233,18 +234,10 @@ public class FivePoolBot extends DefaultBWListener {
         UnitType unitType = unit.getType();
 
         if (!Objects.equals(unit.getPlayer().getName(), self.getName())) {
-            if (isBase(unitType)) {
+            if (BuildingUtilities.isBase(unitType)) {
                 isEnemyBaseDestroyed = true;
             }
         }
-    }
-
-    private boolean isBase(UnitType unitType) {
-        return unitType == UnitType.Protoss_Nexus ||
-                unitType == UnitType.Zerg_Hatchery ||
-                unitType == UnitType.Zerg_Lair ||
-                unitType == UnitType.Zerg_Hive ||
-                unitType == UnitType.Terran_Command_Center;
     }
 
     private void scoutAndAttack(Unit myUnit) {

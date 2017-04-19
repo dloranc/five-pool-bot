@@ -6,6 +6,14 @@ import bwapi.Unit;
 import bwapi.UnitType;
 
 public class BuildingUtilities {
+    public static boolean isBase(UnitType unitType) {
+        return unitType == UnitType.Protoss_Nexus ||
+                unitType == UnitType.Zerg_Hatchery ||
+                unitType == UnitType.Zerg_Lair ||
+                unitType == UnitType.Zerg_Hive ||
+                unitType == UnitType.Terran_Command_Center;
+    }
+
     // Returns a suitable TilePosition to build a given building type near
     // specified TilePosition aroundTile, or null if not found. (builder parameter is our worker)
     static public TilePosition getBuildTile(Game game, Unit builder, UnitType buildingType, TilePosition aroundTile) {
