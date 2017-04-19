@@ -180,7 +180,6 @@ public class FivePoolBot extends DefaultBWListener {
         } else {
             isScoutingIdle = false;
         }
-
     }
 
     private void buildSpawningPool() {
