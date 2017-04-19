@@ -1,4 +1,4 @@
-package dloranc.fivepoolbot;
+package dloranc.fivepoolbot.debug;
 
 import bwapi.*;
 import bwta.*;
@@ -7,20 +7,20 @@ import bwta.Region;
 import java.util.ArrayList;
 import java.util.List;
 
-class DrawingDebug {
+public class DrawingDebug {
     private Game game = null;
     private Unit scoutDrone = null;
     private Player self = null;
     private BaseLocation enemyBase = null;
 
-    DrawingDebug(Game game, Unit scoutDrone, Player player, BaseLocation enemyBase) {
+    public DrawingDebug(Game game, Unit scoutDrone, Player player, BaseLocation enemyBase) {
         this.game = game;
         this.scoutDrone = scoutDrone;
         self = player;
         this.enemyBase = enemyBase;
     }
 
-    void draw() {
+    public void draw() {
         drawChokepointLines();
         drawUnwalkablePolygons();
         drawMapRegions();

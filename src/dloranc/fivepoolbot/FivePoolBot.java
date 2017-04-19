@@ -1,10 +1,8 @@
 package dloranc.fivepoolbot;
 
 import bwapi.*;
-import bwapi.Color;
 import bwta.*;
-import bwta.Polygon;
-import bwta.Region;
+import dloranc.fivepoolbot.debug.DrawingDebug;
 
 import java.util.ArrayList;
 import java.util.HashSet;
