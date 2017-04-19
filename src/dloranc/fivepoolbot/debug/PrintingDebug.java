@@ -2,7 +2,6 @@ package dloranc.fivepoolbot.debug;
 
 import bwapi.Game;
 import bwapi.Player;
-import bwapi.Unit;
 import bwta.BaseLocation;
 
 import java.util.List;
@@ -24,11 +23,5 @@ public class PrintingDebug {
                 game.mapFileName() + ", " + basesCount + " bases, enemy units: " + enemyCount
                         + ", bases to scout: " + possibleEnemyBaseLocations.size()
         );
-    }
-
-    public void printScout(Unit scoutDrone, BaseLocation baseToScout) {
-        if (scoutDrone != null && baseToScout != null) {
-            game.drawTextScreen(10, 45, "Distance to base to scout: " + scoutDrone.getDistance(baseToScout.getPosition()));
-        }
     }
 }
