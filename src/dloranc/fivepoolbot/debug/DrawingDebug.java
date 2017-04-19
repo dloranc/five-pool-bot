@@ -9,16 +9,13 @@ import java.util.List;
 
 public class DrawingDebug {
     private Game game = null;
-    private Player self = null;
-    private BaseLocation enemyBase = null;
 
-    public DrawingDebug(Game game, Player player, BaseLocation enemyBase) {
+    public DrawingDebug(Game game) {
         this.game = game;
-        self = player;
-        this.enemyBase = enemyBase;
     }
 
-    public void draw() {
+    public void draw(Player self, BaseLocation enemyBase) {
+
         drawChokepointLines();
         drawUnwalkablePolygons();
         drawMapRegions();

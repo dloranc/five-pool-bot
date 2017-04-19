@@ -29,6 +29,8 @@ public class FivePoolBot extends DefaultBWListener {
     private boolean isEnemyBaseDestroyed;
     private int basesCount;
     private EnemyBuildings enemyBuildings;
+    private PrintingDebug printingDebug;
+    private DrawingDebug drawingDebug;
 
     public void run() {
         mirror.getModule().setEventListener(this);
@@ -51,6 +53,8 @@ public class FivePoolBot extends DefaultBWListener {
         isEnemyBaseDestroyed = false;
         basesCount = 0;
         enemyBuildings = new EnemyBuildings();
+        printingDebug = new PrintingDebug();
+        drawingDebug = new DrawingDebug(game);
 
         //Use BWTA to analyze map
         //This may take a few minutes if the map is processed first time!
@@ -82,11 +86,8 @@ public class FivePoolBot extends DefaultBWListener {
 
         enemyBuildings.update(game);
 
-        DrawingDebug drawingDebug = new DrawingDebug(game, self, enemyBase);
-        drawingDebug.draw();
-
-        PrintingDebug printingDebug = new PrintingDebug(game, self, possibleEnemyBaseLocations, scoutDrone, basesCount);
-        printingDebug.print();
+        drawingDebug.draw(self, enemyBase);
+        printingDebug.print(game, self, possibleEnemyBaseLocations, scoutDrone, basesCount);
 
         for (Unit myUnit : self.getUnits()) {
             if (myUnit.getType() == UnitType.Zerg_Hatchery) {

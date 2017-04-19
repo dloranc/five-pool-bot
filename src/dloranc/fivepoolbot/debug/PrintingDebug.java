@@ -8,21 +8,7 @@ import bwta.BaseLocation;
 import java.util.List;
 
 public class PrintingDebug {
-    private Game game;
-    private Player self;
-    private List<BaseLocation> possibleEnemyBaseLocations;
-    private Unit scoutDrone;
-    private int basesCount;
-
-    public PrintingDebug(Game game, Player self, List<BaseLocation> possibleEnemyBaseLocations, Unit scoutDrone, int basesCount) {
-        this.game = game;
-        this.self = self;
-        this.possibleEnemyBaseLocations = possibleEnemyBaseLocations;
-        this.scoutDrone = scoutDrone;
-        this.basesCount = basesCount;
-    }
-
-    public void print() {
+    public void print(Game game, Player self, List<BaseLocation> possibleEnemyBaseLocations, Unit scoutDrone, int basesCount) {
 
         game.drawTextScreen(10, 10, "Playing as " + self.getRace() + ", FPS: " + game.getFPS() + ", frames: " + game.getFrameCount());
 
