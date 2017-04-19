@@ -3,6 +3,7 @@ package dloranc.fivepoolbot;
 import bwapi.*;
 import bwta.*;
 import dloranc.fivepoolbot.debug.DrawingDebug;
+import dloranc.fivepoolbot.debug.PrintingDebug;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -84,7 +85,8 @@ public class FivePoolBot extends DefaultBWListener {
         DrawingDebug drawingDebug = new DrawingDebug(game, scoutDrone, self, enemyBase);
         drawingDebug.draw();
 
-        printDebug();
+        PrintingDebug printingDebug = new PrintingDebug(game, self, possibleEnemyBaseLocations, scoutDrone, basesCount);
+        printingDebug.print();
 
         for (Unit myUnit : self.getUnits()) {
             if (myUnit.getType() == UnitType.Zerg_Hatchery) {
@@ -136,21 +138,6 @@ public class FivePoolBot extends DefaultBWListener {
             System.out.println("Victory!");
         } else {
             System.out.println("Lose...");
-        }
-    }
-
-    private void printDebug() {
-        game.drawTextScreen(10, 10, "Playing as " + self.getRace() + ", FPS: " + game.getFPS() + ", frames: " + game.getFrameCount());
-
-        int enemyCount = game.enemy().getUnits().size();
-
-        game.drawTextScreen(10, 25,
-                game.mapFileName() + ", " + basesCount + " bases, enemy units: " + enemyCount
-                        + ", bases to scout: " + possibleEnemyBaseLocations.size()
-        );
-
-        if (scoutDrone != null) {
-            game.drawTextScreen(10, 45, "Scout Drone: " + scoutDrone.getPosition().toString());
         }
     }
 
