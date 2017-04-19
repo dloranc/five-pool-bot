@@ -15,7 +15,6 @@ public class DrawingDebug {
     }
 
     public void draw(Player self, BaseLocation enemyBase) {
-
         drawChokepointLines();
         drawUnwalkablePolygons();
         drawMapRegions();
@@ -26,6 +25,16 @@ public class DrawingDebug {
 
         if (enemyBase != null) {
             game.drawCircleMap(enemyBase.getPosition(), 70, Color.Purple);
+        }
+    }
+
+    public void drawVisibleAreas() {
+        for (int i = 0; i < 128; i++) {
+            for (int j = 0; j < 128; j++) {
+                if(game.isVisible(i, j)) {
+                    game.drawCircleMap(i * 32, j * 32, 16, Color.Orange);
+                }
+            }
         }
     }
 
