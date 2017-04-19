@@ -174,11 +174,23 @@ public class FivePoolBot extends DefaultBWListener {
                 possibleEnemyBaseLocations.remove(baseToScout);
 
                 baseToScout = selectBase();
-                scoutDrone.attack(baseToScout.getPosition());
+                scoutDrone.move(baseToScout.getPosition());
 
                 if (possibleEnemyBaseLocations.size() == 1) {
                     enemyBase = baseToScout;
                 }
+            } else {
+                Unit droneToAttack = null;
+
+                for (Unit enemy : game.enemy().getUnits()) {
+                    if (enemy.getType().isWorker() && enemy.isGatheringMinerals()) {
+                        droneToAttack = enemy;
+                        break;
+                    }
+                }
+
+                scoutDrone.attack(droneToAttack);
+                enemyBase = baseToScout;
             }
         } else {
             isScoutingIdle = false;
