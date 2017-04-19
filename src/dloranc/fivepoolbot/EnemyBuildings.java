@@ -1,11 +1,8 @@
 package dloranc.fivepoolbot;
 
-import bwapi.Game;
-import bwapi.Position;
-import bwapi.TilePosition;
-import bwapi.Unit;
-
+import bwapi.*;
 import java.util.HashSet;
+import java.util.List;
 
 public class EnemyBuildings {
     private HashSet<Position> enemyBuildingMemory;
@@ -15,7 +12,9 @@ public class EnemyBuildings {
     }
 
     public void update(Game game) {
-        for (Unit unit : game.enemy().getUnits()) {
+        List<Unit> enemyUnits = game.enemy().getUnits();
+
+        for (Unit unit : enemyUnits) {
             if (unit.getType().isBuilding()) {
                 if (!enemyBuildingMemory.contains(unit.getPosition())) {
                     enemyBuildingMemory.add(unit.getPosition());
@@ -24,17 +23,14 @@ public class EnemyBuildings {
         }
 
         for (Position position : enemyBuildingMemory) {
-            // compute the TilePosition corresponding to our remembered Position p
-            TilePosition tileCorrespondingToP = new TilePosition(position.getX() / 32, position.getY() / 32);
-
             //if that tile is currently visible to us...
-            if (game.isVisible(tileCorrespondingToP)) {
+            if (game.isVisible(position.getX() / 32, position.getY() / 32)) {
 
                 //loop over all the visible enemy buildings and find out if at least
                 //one of them is still at that remembered position
                 boolean buildingStillThere = false;
-                for (Unit unit : game.enemy().getUnits()) {
-                    if ((unit.getType().isBuilding()) && (unit.getPosition() == position)) {
+                for (Unit unit : enemyUnits) {
+                    if (unit.getType().isBuilding() && unit.getPosition().equals(position)) {
                         buildingStillThere = true;
                         break;
                     }

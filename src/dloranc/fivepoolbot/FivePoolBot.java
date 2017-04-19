@@ -88,8 +88,8 @@ public class FivePoolBot extends DefaultBWListener {
         enemyBuildings.update(game);
 
         drawingDebug.draw(self, enemyBase);
+        drawingDebug.drawEnemyBuildings(enemyBuildings);
         printingDebug.print(self, possibleEnemyBaseLocations, basesCount);
-        printingDebug.printScout(scoutDrone, baseToScout);
 
         for (Unit myUnit : self.getUnits()) {
             if (myUnit.getType() == UnitType.Zerg_Hatchery) {
