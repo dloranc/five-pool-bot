@@ -9,13 +9,11 @@ import java.util.List;
 
 public class DrawingDebug {
     private Game game = null;
-    private Unit scoutDrone = null;
     private Player self = null;
     private BaseLocation enemyBase = null;
 
-    public DrawingDebug(Game game, Unit scoutDrone, Player player, BaseLocation enemyBase) {
+    public DrawingDebug(Game game, Player player, BaseLocation enemyBase) {
         this.game = game;
-        this.scoutDrone = scoutDrone;
         self = player;
         this.enemyBase = enemyBase;
     }
@@ -25,14 +23,8 @@ public class DrawingDebug {
         drawUnwalkablePolygons();
         drawMapRegions();
 
-        if (scoutDrone != null) {
-            drawTargetLine(scoutDrone);
-        }
-
         for (Unit unit : self.getUnits()) {
-            if (unit.getType() == UnitType.Zerg_Zergling) {
-                drawTargetLine(unit);
-            }
+            drawTargetLine(unit);
         }
 
         if (enemyBase != null) {
@@ -121,7 +113,15 @@ public class DrawingDebug {
             color = Color.Red;
         }
 
-        if (order == Order.MoveToMinerals || order == Order.ReturnMinerals) {
+        if (order == Order.Move) {
+            color = Color.Yellow;
+        }
+
+        if (order == Order.MoveToGas || order == Order.WaitForGas || order == Order.HarvestGas || order == Order.ReturnGas) {
+            color = Color.Green;
+        }
+
+        if (order == Order.MoveToMinerals || order == Order.MiningMinerals || order == Order.ReturnMinerals || order == Order.WaitForMinerals) {
             color = Color.Blue;
         }
 

@@ -82,7 +82,7 @@ public class FivePoolBot extends DefaultBWListener {
 
         enemyBuildings.update(game);
 
-        DrawingDebug drawingDebug = new DrawingDebug(game, scoutDrone, self, enemyBase);
+        DrawingDebug drawingDebug = new DrawingDebug(game, self, enemyBase);
         drawingDebug.draw();
 
         PrintingDebug printingDebug = new PrintingDebug(game, self, possibleEnemyBaseLocations, scoutDrone, basesCount);
