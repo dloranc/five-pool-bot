@@ -266,16 +266,8 @@ public class FivePoolBot extends DefaultBWListener {
     }
 
     private void backToBaseToGatherMinerals() {
-        Unit closestMineral = null;
-
         //find the closest mineral near main hatchery
-        for (Unit neutralUnit : game.neutral().getUnits()) {
-            if (neutralUnit.getType().isMineralField()) {
-                if (closestMineral == null || hatchery.getDistance(neutralUnit) < hatchery.getDistance(closestMineral)) {
-                    closestMineral = neutralUnit;
-                }
-            }
-        }
+        Unit closestMineral = findClosestMineral(hatchery);
 
         scoutDrone.gather(closestMineral);
     }
@@ -315,6 +307,11 @@ public class FivePoolBot extends DefaultBWListener {
             }
         }
 
+        Unit closestMineral = findClosestMineral(myUnit);
+        myUnit.gather(closestMineral, false);
+    }
+
+    private Unit findClosestMineral(Unit myUnit) {
         Unit closestMineral = null;
 
         //find the closest mineral
@@ -326,10 +323,7 @@ public class FivePoolBot extends DefaultBWListener {
             }
         }
 
-        //if a mineral patch was found, send the worker to gather it
-        if (closestMineral != null) {
-            myUnit.gather(closestMineral, false);
-        }
+        return closestMineral;
     }
 
     public static void main(String[] args) {
